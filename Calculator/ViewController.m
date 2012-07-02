@@ -16,6 +16,7 @@
 @end
 
 @implementation ViewController
+@synthesize topLabel = _topLabel;
 @synthesize display = _display;
 @synthesize userIsInTheMiddleOfEnteringANumber = _userIsInTheMiddleOfEnteringANumber;
 @synthesize brain=_brain;
@@ -32,22 +33,47 @@
     if (self.userIsInTheMiddleOfEnteringANumber) {
         self.display.text = [self.display.text stringByAppendingFormat:digit];
     } else {
-        self.display.text =digit;
+        self.display.text = digit;
         self.userIsInTheMiddleOfEnteringANumber = YES;
     }
     
 }
 
+
+
 - (IBAction)enterPressed {
-    
+    self.topLabel.text = [self.topLabel.text stringByAppendingFormat:@" %@", self.display.text];
     [self.brain pushOperand:[self.display.text doubleValue]];
     self.userIsInTheMiddleOfEnteringANumber = NO;
 }
+
+- (IBAction)clearPressed:(UIButton *)sender {
+    [self.brain performOperation:@"C"];
+    self.topLabel.text = @"";
+}
+
+- (IBAction)dotPressed:(UIButton *)sender {
+    NSRange range = [self.display.text rangeOfString:@"."];
+        if (range.location == NSNotFound) {
+            self.display.text = [self.display.text stringByAppendingString:@"."];
+            self.userIsInTheMiddleOfEnteringANumber = YES;
+    }
+}
+
 - (IBAction)operationPressed:(UIButton *)sender {
     
+    if (self.userIsInTheMiddleOfEnteringANumber) {
+        [self enterPressed];
+    }
     NSString *operation = [sender currentTitle];
     double result = [self.brain performOperation:operation];
     self.display.text = [NSString stringWithFormat:@"%g", result];
-    
+    if(operation == @"C"){
+        self.topLabel.text = @"";
+    }
+    else{
+        self.topLabel.text = [self.topLabel.text stringByAppendingFormat:@" %@", operation];
+
+    }    
 }
 @end

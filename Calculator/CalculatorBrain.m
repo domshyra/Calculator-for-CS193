@@ -31,19 +31,35 @@
     if (operandObject) [self.operandStack removeLastObject];
     return [operandObject doubleValue];
 }
+
 - (double)performOperation:(NSString *)operation{
     
     double result = 0;
     if ([operation isEqualToString:@"+"]) {
         result = [self popOperand] + [self popOperand];
-    }else if ([@"*" isEqualToString:operation]) {
+    }else if ([operation isEqualToString:@"*"]) {
         result = [self popOperand] * [self popOperand];
-    }else if ([@"-" isEqualToString:operation]) {
+    }else if ([operation isEqualToString:@"-"]) {
         double subtrahend = [self popOperand];
         result = [self popOperand] - subtrahend;
-    }else if ([@"/" isEqualToString:operation]) {
+    }else if ([operation isEqualToString:@"÷"]) {
         double divisor = [self popOperand];
         if (divisor) result = [self popOperand] / divisor;
+    }else if ([operation isEqualToString:@"+/-"]) {
+        result = [self popOperand] * -1;
+    }else if ([operation isEqualToString:@"sin"]){
+        double divisor = [self popOperand];
+        if (divisor) result = sin(M_PI/180 * divisor);
+    }else if ([operation isEqualToString:@"cos"]){
+        double divisor = [self popOperand];
+        if (divisor) result = cos(M_PI/180 * divisor);
+    }else if ([operation isEqualToString:@"sqrt"]){
+        result = sqrt([self popOperand]);
+    }else if ([operation isEqualToString:@"π"]) {
+        [self pushOperand:M_PI];
+        result = [self popOperand];
+    }else if ([operation isEqualToString:@"C"]) {
+        [self.operandStack removeAllObjects];
     }
     [self pushOperand:result];
     
